@@ -5,7 +5,7 @@ import GenerarQR from './GenerarQR';
 import GestionInasistencias from './GestionInasistencias';
 
 function Asistencias() {
-    const [activeTab, setActiveTab] = useState('gestionar'); // gestionar | generar-qr | registrar
+    const [activeTab, setActiveTab] = useState('generar-qr'); // generar-qr | registrar
     const [asistencias, setAsistencias] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -116,44 +116,30 @@ function Asistencias() {
     return (
         <div className="crud-container">
             <div className="crud-header">
-                <h1>📋 Asistencia Docente</h1>
+                <h1>Asistencia Docente</h1>
                 <p className="subtitle">Gestiona asistencias, genera QR y registra acceso</p>
             </div>
 
-            {/* Pestañas de Navegación */}
-            <div className="tabs-container">
+            {/* Pestañas de Navegación - Solo 2 opciones modernas */}
+            <div className="tabs-container-modern">
                 <button
-                    className={`tab-btn ${activeTab === 'gestionar' ? 'active' : ''}`}
-                    onClick={() => {
-                        setActiveTab('gestionar');
-                        setShowForm(false);
-                    }}
-                >
-                    📊 Gestionar Asistencias
-                </button>
-                <button
-                    className={`tab-btn ${activeTab === 'generar-qr' ? 'active' : ''}`}
+                    className={`tab-btn-modern ${activeTab === 'generar-qr' ? 'active' : ''}`}
                     onClick={() => setActiveTab('generar-qr')}
                 >
-                    🎯 Generar QR
+                    <span className="tab-text">Generar QR</span>
                 </button>
                 <button
-                    className={`tab-btn ${activeTab === 'registrar' ? 'active' : ''}`}
+                    className={`tab-btn-modern ${activeTab === 'registrar' ? 'active' : ''}`}
                     onClick={() => setActiveTab('registrar')}
                 >
-                    ✅ Registrar Asistencia
-                </button>
-                <button
-                    className={`tab-btn ${activeTab === 'inasistencias' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('inasistencias')}
-                >
-                    📋 Gestionar Inasistencias
+                    <span className="tab-text">Registrar Asistencia</span>
                 </button>
             </div>
 
             {error && <div className="alert alert-danger">{error}</div>}
 
-            {/* Pestaña 1: Gestionar Asistencias */}
+            {/* Pestaña 1: Gestionar Asistencias - OCULTA */}
+            {/* SECCIÓN COMENTADA - Para mantener la lógica pero sin mostrar en UI
             {activeTab === 'gestionar' && (
                 <div className="tab-content">
                     <div className="section-header">
@@ -322,6 +308,7 @@ function Asistencias() {
                     </div>
                 </div>
             )}
+            */}
 
             {/* Pestaña 2: Generar QR */}
             {activeTab === 'generar-qr' && (
@@ -351,12 +338,14 @@ function Asistencias() {
                 </div>
             )}
 
-            {/* Pestaña 4: Gestionar Inasistencias */}
+            {/* Pestaña 3: Gestionar Inasistencias - OCULTA */}
+            {/* SECCIÓN COMENTADA - Para mantener la lógica pero sin mostrar en UI
             {activeTab === 'inasistencias' && (
                 <div className="tab-content">
                     <GestionInasistencias />
                 </div>
             )}
+            */}
         </div>
     );
 }

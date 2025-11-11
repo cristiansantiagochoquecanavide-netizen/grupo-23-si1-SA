@@ -228,7 +228,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==========================================
     
     // CU18: Registrar y Consultar Bitácora de Acciones
-    Route::middleware(['auth:sanctum'])->prefix('bitacora')->group(function () {
+    // NOTA: Temporalmente sin middleware auth:sanctum para debug
+    Route::prefix('bitacora')->group(function () {
         // Solo Administrador y Auditor pueden ver bitácora
         Route::get('/', [BitacoraController::class, 'listarAcciones']);
         Route::get('/estadisticas', [BitacoraController::class, 'estadisticas']);

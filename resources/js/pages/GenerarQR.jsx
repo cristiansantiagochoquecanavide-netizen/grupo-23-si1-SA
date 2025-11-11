@@ -97,7 +97,7 @@ const GenerarQR = () => {
   return (
     <div className="generar-qr">
       <div className="container">
-        <h1>🎯 Generar QR de Asistencia</h1>
+        <h1>Generar QR de Asistencia</h1>
         <p className="subtitle">Crea un código QR para que tus estudiantes registren asistencia</p>
 
         {error && <div className="alert alert-error">{error}</div>}

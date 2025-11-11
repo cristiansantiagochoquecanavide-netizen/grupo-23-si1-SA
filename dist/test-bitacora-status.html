@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Bitácora Acceso</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .test { padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background: #d4edda; border-color: #28a745; color: #155724; }
+        .fail { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Verificación de Bitácora API</h1>
+
+    <h2>Test 1: Conectividad del servidor</h2>
+    <div id="test1" class="test">Verificando...</div>
+
+    <h2>Test 2: Endpoint /api/bitacora sin autenticación</h2>
+    <div id="test2" class="test">Verificando...</div>
+
+    <h2>Test 3: Ver página /bitacora</h2>
+    <div id="test3" class="test">
+        <p><a href="/bitacora" target="_blank">Ir a /bitacora</a></p>
+    </div>
+
+    <h2>Test 4: Verificar rutas disponibles</h2>
+    <div id="test4" class="test">Verificando...</div>
+
+    <script>
+        // Test 1: Conectividad
+        fetch('/')
+            .then(r => r.text())
+            .then(html => {
+                const div = document.getElementById('test1');
+                div.className = 'test pass';
+                div.innerHTML = '<strong>✅ Servidor respondiendo</strong><pre>Status: OK</pre>';
+            })
+            .catch(e => {
+                const div = document.getElementById('test1');
+                div.className = 'test fail';
+                div.innerHTML = '<strong>❌ Error de conexión</strong><pre>' + e.message + '</pre>';
+            });
+
+        // Test 2: API bitácora
+        fetch('/api/bitacora')
+            .then(r => r.json())
+            .then(data => {
+                const div = document.getElementById('test2');
+                if (data.success !== false) {
+                    div.className = 'test pass';
+                    div.innerHTML = `<strong>✅ API respondiendo</strong><pre>Registros: ${data.data ? data.data.length : '?'}</pre>`;
+                } else {
+                    div.className = 'test fail';
+                    div.innerHTML = `<strong>⚠️ API con error</strong><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            })
+            .catch(e => {
+                const div = document.getElementById('test2');
+                div.className = 'test fail';
+                div.innerHTML = '<strong>❌ Error</strong><pre>' + e.message + '</pre>';
+            });
+
+        // Test 4: Ver rutas
+        fetch('/api/routes', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.json())
+            .then(data => {
+                const div = document.getElementById('test4');
+                div.innerHTML = '<strong>Rutas disponibles:</strong><pre>' + JSON.stringify(data, null, 2).substring(0, 500) + '...</pre>';
+            })
+            .catch(e => {
+                const div = document.getElementById('test4');
+                div.innerHTML = '<strong>No se pudo listar rutas (esperado)</strong>';
+            });
+    </script>
+</body>
+</html>

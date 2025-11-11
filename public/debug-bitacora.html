@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Bitácora</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .section { margin: 20px 0; padding: 10px; background: #f5f5f5; border-left: 3px solid #333; }
+        button { padding: 8px 12px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 3px; }
+        pre { background: #fff; overflow-x: auto; border: 1px solid #ddd; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug de Bitácora API</h1>
+
+    <div class="section">
+        <h2>1. Token en localStorage</h2>
+        <pre id="token"></pre>
+    </div>
+
+    <div class="section">
+        <h2>2. Usuario en localStorage</h2>
+        <pre id="user"></pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Test API /bitacora</h2>
+        <button onclick="testAPI()">Llamar API</button>
+        <pre id="apiResult"></pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Test API /bitacora/modulos</h2>
+        <button onclick="testModulos()">Llamar /modulos</button>
+        <pre id="modulosResult"></pre>
+    </div>
+
+    <div class="section">
+        <h2>5. Test API /bitacora/estadisticas</h2>
+        <button onclick="testStats()">Llamar /estadisticas</button>
+        <pre id="statsResult"></pre>
+    </div>
+
+    <script>
+        // Mostrar datos del localStorage
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        document.getElementById('token').textContent = token 
+            ? `✅ Token encontrado (primeros 50 chars):\n${token.substring(0, 50)}...`
+            : '❌ No hay token';
+
+        document.getElementById('user').textContent = user 
+            ? `✅ Usuario: ${user}`
+            : '❌ No hay usuario';
+
+        async function testAPI() {
+            const res = document.getElementById('apiResult');
+            res.textContent = 'Cargando...';
+            try {
+                const response = await fetch('/api/bitacora', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                res.textContent = JSON.stringify(data, null, 2).substring(0, 1000) + '...';
+            } catch (e) {
+                res.textContent = '❌ Error: ' + e.message;
+            }
+        }
+
+        async function testModulos() {
+            const res = document.getElementById('modulosResult');
+            res.textContent = 'Cargando...';
+            try {
+                const response = await fetch('/api/bitacora/modulos', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                res.textContent = JSON.stringify(data, null, 2);
+            } catch (e) {
+                res.textContent = '❌ Error: ' + e.message;
+            }
+        }
+
+        async function testStats() {
+            const res = document.getElementById('statsResult');
+            res.textContent = 'Cargando...';
+            try {
+                const response = await fetch('/api/bitacora/estadisticas', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                res.textContent = JSON.stringify(data, null, 2);
+            } catch (e) {
+                res.textContent = '❌ Error: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -438,3 +438,114 @@
     text-decoration: underline;
 }
 
+/* Estilos Modernos para Pestañas */
+.tabs-container-modern {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #f3e8ff 100%);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tab-btn-modern {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 15px;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f97316, #dc2626);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.tab-btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2);
+    border-color: #f97316;
+}
+
+.tab-btn-modern.active {
+    background: linear-gradient(135deg, #f97316, #dc2626);
+    color: white;
+    border-color: #dc2626;
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+}
+
+.tab-btn-modern.active::before {
+    left: 0;
+}
+
+.tab-icon {
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.tab-text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Responsive para tabs */
+@media (max-width: 768px) {
+    .tabs-container-modern {
+        flex-wrap: wrap;
+        padding: 16px;
+        gap: 8px;
+    }
+
+    .tab-btn-modern {
+        padding: 10px 16px;
+        font-size: 14px;
+        gap: 6px;
+    }
+
+    .tab-icon {
+        font-size: 18px;
+    }
+
+    .tab-text {
+        font-size: 13px;
+    }
+}
+
+.tab-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
