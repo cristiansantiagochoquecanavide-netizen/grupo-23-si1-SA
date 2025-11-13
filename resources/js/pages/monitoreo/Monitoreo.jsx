@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import ErrorBoundary from '../../components/ErrorBoundary';
 import Dashboard from '../Dashboard';
+import GenerarReportes from './GenerarReportes';
 import './Monitoreo.css';
 
 const Monitoreo = () => {
   const location = useLocation();
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('dashboard');
-
+  
   // Componentes disponibles en el paquete
   const componentes = [
     {
@@ -17,13 +18,27 @@ const Monitoreo = () => {
       description: 'Indicadores de planificación, asistencia y conflictos',
       icon: '📊',
       component: Dashboard,
-      roles: ['Administrador', 'Coordinador Académico']
+      roles: ['Administrador', 'Coordinador Académico', 'Docente']
+    },
+    {
+      id: 'reportes',
+      name: 'CU17 - Generar Reportes (PDF/Excel)',
+      description: 'Obtener reportes operacionales/gerenciales (asignaciones, asistencia, inasistencias, ocupación)',
+      icon: '📄',
+      component: GenerarReportes,
+      roles: ['Administrador', 'Coordinador Académico', 'Docente']
     }
   ];
 
   // Filtrar componentes según el rol del usuario
+  const userRole = user?.rol?.nombre || '';
   const componentesDisponibles = componentes.filter(comp => 
-    comp.roles.includes(user?.rol?.nombre)
+    !comp.roles || comp.roles.length === 0 || comp.roles.includes(userRole)
+  );
+
+  // Establecer tab activo: usar el primer componente disponible
+  const [activeTab, setActiveTab] = useState(
+    componentesDisponibles.length > 0 ? componentesDisponibles[0].id : 'dashboard'
   );
 
   // Obtener componente activo
@@ -66,13 +81,15 @@ const Monitoreo = () => {
 
         {/* Contenedor del componente actual */}
         <div className="monitoreo-view">
-          {ComponenteActual ? (
-            <ComponenteActual />
-          ) : (
-            <div className="no-access">
-              <p>No tienes acceso a este componente</p>
-            </div>
-          )}
+          <ErrorBoundary>
+            {ComponenteActual ? (
+              <ComponenteActual />
+            ) : (
+              <div className="no-access">
+                <p>No tienes acceso a este componente</p>
+              </div>
+            )}
+          </ErrorBoundary>
         </div>
       </div>
     </div>

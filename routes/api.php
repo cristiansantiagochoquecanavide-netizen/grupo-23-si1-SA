@@ -20,6 +20,7 @@ use App\Http\Controllers\Asistencia_Docente\AsistenciaController;
 use App\Http\Controllers\Asistencia_Docente\RegistroAsistenciaController;
 use App\Http\Controllers\Asistencia_Docente\GestionInasistenciasController;
 use App\Http\Controllers\Monitoreo_y_Reportes\DashboardController;
+use App\Http\Controllers\Monitoreo_y_Reportes\ReportesController;
 use App\Http\Controllers\Auditoria_y_Trazabilidad\BitacoraController;
 
 // ==========================================
@@ -221,6 +222,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard/kpis', [DashboardController::class, 'getKPIs']); // Control de KPIs
         Route::get('/dashboard/coordinacion', [DashboardController::class, 'getCoordinacionHorario']); // Coordinación de Horario
         Route::get('/dashboard/bitacora', [DashboardController::class, 'getBitacora']); // Acceso a Bitácora
+    });
+
+    // CU17: Generar Reportes PDF/Excel (Solo Administrador y Coordinador Académico)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/reportes/generar', [ReportesController::class, 'generar']);
+        Route::post('/reportes/compartir', [ReportesController::class, 'compartir']);
     });
 
     // ==========================================

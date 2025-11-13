@@ -99,7 +99,8 @@ const menuModules = [
             </svg>
         ),
         items: [
-            // CU16 ocultado del menú
+            { name: 'CU16 - Visualizar Dashboard', path: '/monitoreo', cu: 'CU16' },
+            { name: 'CU17 - Generar Reportes', path: '/monitoreo', cu: 'CU17' }
         ],
         visibleForRoles: ['Administrador', 'Coordinador Académico']
     }
