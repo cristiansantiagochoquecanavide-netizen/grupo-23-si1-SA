@@ -3,15 +3,15 @@ services:
     name: Exam-2-SI1
     runtime: docker
     region: oregon
-    buildCommand: ""
-    startCommand: ""
+    buildCommand: "docker build -t Exam-2-SI1 ."
+    startCommand: "bash start-server.sh"
     envVars:
       - key: APP_NAME
         value: AppWebCargaHoraria
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: "false"
+        value: "true"
       - key: APP_KEY
         value: base64:VPuXqWlyLax+DN2E/gda6wTVtlES3EkJJquGkv3HE1U=
       - key: APP_URL
@@ -19,7 +19,7 @@ services:
       - key: FRONTEND_URL
         value: https://Exam-2-SI1.onrender.com
       - key: LOG_LEVEL
-        value: info
+        value: debug
       - key: VITE_API_URL
         value: https://Exam-2-SI1.onrender.com/api
       - key: DB_CONNECTION
