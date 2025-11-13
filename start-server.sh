@@ -39,6 +39,10 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -tc "SELECT 1 FROM pg_d
 echo "Creando schema..."
 php artisan tinker --execute="DB::statement('CREATE SCHEMA IF NOT EXISTS carga_horaria')" 2>&1 || true
 
+# Inicializar base de datos
+echo "Inicializando base de datos..."
+bash init-database.sh 2>&1 || echo "⚠️  Advertencia en inicialización de BD"
+
 # Ejecutar migraciones
 echo "Ejecutando migraciones..."
 php artisan migrate --force --no-interaction 2>&1 || {

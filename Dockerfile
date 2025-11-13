@@ -28,8 +28,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Instalar y compilar frontend
 RUN npm install && npm run build
 
-# Hacer ejecutable el script
-RUN chmod +x start-server.sh
+# Hacer ejecutables los scripts
+RUN chmod +x start-server.sh init-database.sh
 
 # Exponer puerto
 EXPOSE 10000
