@@ -1,31 +1,38 @@
-# Etapa 1: Builder de PHP
+# ========================
+# Etapa 1: Builder PHP
+# ========================
 FROM composer:2 AS php-build
 
 WORKDIR /app
 
-# Copiar TODO el proyecto (incluye artisan)
 COPY . .
 
-# Crear directorios requeridos ANTES de composer
 RUN mkdir -p bootstrap/cache storage/logs storage/framework \
     && chmod -R 777 bootstrap storage
 
-# Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 
-# Etapa 2: Builder de Vite
+# ========================
+# Etapa 2: Builder de Vite (React)
+# ========================
 FROM node:18 AS vite-build
 
 WORKDIR /app
 
-COPY . .
-
+COPY package.json package-lock.json ./
 RUN npm install
+
+COPY resources ./resources
+COPY vite.config.js .
+
+# build de Vite → genera /public/assets y /public/index.html
 RUN npm run build
 
 
-# Etapa 3: Imagen final
+# ========================
+# Etapa 3: Imagen final Apache + PHP
+# ========================
 FROM php:8.2-apache
 
 WORKDIR /var/www/html
@@ -37,14 +44,15 @@ RUN apt-get update && apt-get install -y \
 
 RUN a2enmod rewrite
 
-# Copiar código del proyecto
+# Copiar todo Laravel excepto node_modules
 COPY . .
 
-# Copiar archivos construidos
-COPY --from=vite-build /app/public/build ./public/build
-COPY --from=php-build /app/vendor ./vendor
+# Copiar assets generados POR VITE (NO build)
+COPY --from=vite-build /app/public /var/www/html/public
 
-# Permisos
+# Copiar vendor del build PHP
+COPY --from=php-build /app/vendor /var/www/html/vendor
+
 RUN mkdir -p bootstrap/cache storage \
     && chmod -R 777 bootstrap storage
 
