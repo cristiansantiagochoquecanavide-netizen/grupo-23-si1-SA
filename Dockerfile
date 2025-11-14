@@ -1,38 +1,56 @@
-FROM php:8.2-cli
+# ============================
+#  🟦 STAGE 1: Build de Vite
+# ============================
+FROM node:18 AS vite-build
 
 WORKDIR /app
 
-# Instalar dependencias del sistema
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+
+
+# ===================================
+#  🟧 STAGE 2: Imagen final de Laravel
+# ===================================
+FROM php:8.2-apache
+
+# Instalar extensiones necesarias para Laravel + PostgreSQL
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
     postgresql-client \
-    npm \
     unzip \
-    && docker-php-ext-install pdo pdo_pgsql \
+    && docker-php-ext-install pdo pdo_pgsql opcache \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Habilitar mod_rewrite para Laravel
+RUN a2enmod rewrite
 
-# Copiar archivos del proyecto
+# Configurar Apache
+COPY ./deploy/apache.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html
+
+# Copiar proyecto completo
 COPY . .
 
-# Crear directorios necesarios
-RUN mkdir -p storage/logs bootstrap/cache && chmod -R 777 storage bootstrap
+# Copiar el build de Vite a la carpeta pública
+COPY --from=vite-build /app/public/build ./public/build
 
-# Instalar dependencias PHP (sin ejecutar migraciones)
+# Instalar Composer (producción)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Instalar y compilar frontend
-RUN npm install && npm run build
+# Crear permisos
+RUN mkdir -p storage/logs bootstrap/cache && chmod -R 777 storage bootstrap/cache
 
-# Hacer ejecutables los scripts
-RUN chmod +x start-server.sh init-database.sh
-
-# Exponer puerto
+# Exponer puerto (Render usa 10000)
 EXPOSE 10000
 
-# Comando de inicio
-CMD ["bash", "start-server.sh"]
+# Iniciar Apache
+CMD ["apache2-foreground"]
