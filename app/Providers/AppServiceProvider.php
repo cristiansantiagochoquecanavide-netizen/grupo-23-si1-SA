@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,20 +15,20 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Fix para Render (NO usar env() aquí)
+        // Ajuste seguro para PostgreSQL
         if (config('database.default') === 'pgsql') {
 
-            // Siempre establecer longitud predeterminada
             Schema::defaultStringLength(255);
 
-            // Si tienes schema:
-            $schema = config('database.connections.pgsql.search_path');
+            // Leer el schema desde el ENV
+            $schema = env('DB_SCHEMA');
 
-            if ($schema) {
+            // Solo ejecutar si existe un nombre válido
+            if (!empty($schema)) {
                 try {
-                    \DB::statement("SET search_path TO {$schema}");
+                    DB::statement("SET search_path TO {$schema}");
                 } catch (\Exception $e) {
-                    // No romper nada
+                    // Evitar romper la app en producción
                 }
             }
         }
