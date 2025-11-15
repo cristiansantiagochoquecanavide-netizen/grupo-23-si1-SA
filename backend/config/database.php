@@ -86,16 +86,16 @@ return [
         'pgsql' => [
     'driver' => 'pgsql',
     'url' => env('DB_URL'),
-    'host' => null,
-    'port' => null,
-    'database' => null,
-    'username' => null,
-    'password' => null,
+    'host' => env('DB_HOST', 'localhost'),
+    'port' => env('DB_PORT', '5432'),
+    'database' => env('DB_DATABASE', 'laravel'),
+    'username' => env('DB_USERNAME', 'postgres'),
+    'password' => env('DB_PASSWORD', ''),
     'charset' => 'utf8',
     'prefix' => '',
     'prefix_indexes' => true,
     'search_path' => env('DB_SCHEMA', 'carga_horaria'),
-    'sslmode' => env('DB_SSLMODE', 'require'),
+    'sslmode' => env('DB_SSLMODE', 'prefer'),
 ],
 
 
