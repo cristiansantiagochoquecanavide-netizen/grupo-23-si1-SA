@@ -47,6 +47,7 @@ RUN apt-get update && apt-get install -y \
 # Habilitar módulos necesarios de Apache
 RUN a2enmod rewrite
 RUN a2enmod headers
+RUN a2enmod mime
 
 # Configurar Apache para servir desde /var/www/html/public
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
