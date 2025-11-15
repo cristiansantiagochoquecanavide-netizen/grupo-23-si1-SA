@@ -26,7 +26,25 @@ use App\Http\Controllers\Auditoria_y_Trazabilidad\BitacoraController;
 // ==========================================
 // RUTAS PÚBLICAS (sin autenticación)
 // ==========================================
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/login', function (Request $request) {
+    try {
+        return (new AuthController())->login($request);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'message' => 'Validation failed',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        \Log::error('Login error:', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
+        return response()->json([
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 Route::post('/auth/refresh', [AuthController::class, 'refresh']);
 
