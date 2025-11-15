@@ -13,7 +13,7 @@ export default defineConfig({
 
     build: {
         manifest: true,
-        outDir: 'public/build',   // <── obligatorio
+        outDir: '../backend/public/build',
         emptyOutDir: true,
     },
 });
